@@ -475,7 +475,7 @@ function sortByAsc(arr) {
 function shuffleChar(str, iterations) {
   let shuffleStr = str;
   const strLen = str.length;
-  for (let i = 0; i < iterations; i += 1) {
+  for (let i = 1; i <= iterations; i += 1) {
     let leftStr = shuffleStr[0];
     let rightStr = '';
     for (let j = 1; j < strLen; j += 1) {
@@ -486,6 +486,9 @@ function shuffleChar(str, iterations) {
       }
     }
     shuffleStr = leftStr + rightStr;
+    if (shuffleStr === str) {
+      return shuffleChar(str, iterations % i);
+    }
   }
   return shuffleStr;
 }
@@ -507,8 +510,35 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  let nearBigNumber = number;
+  const numArr = [];
+  while (nearBigNumber > 0) {
+    numArr.unshift(nearBigNumber % 10);
+    nearBigNumber = Math.floor(nearBigNumber / 10);
+  }
+  const arrLen = numArr.length;
+  let n = arrLen - 1;
+  while (numArr[n - 1] >= numArr[n] && n >= 0) {
+    n -= 1;
+  }
+  let i = arrLen - 1;
+  while (numArr[n - 1] >= numArr[i] && i >= 0) {
+    i -= 1;
+  }
+  [numArr[n - 1], numArr[i]] = [numArr[i], numArr[n - 1]];
+  const left = [];
+  for (let j = 0; j < n; j += 1) {
+    left[j] = numArr[j];
+  }
+  let right = [];
+  for (let j = n; j < arrLen; j += 1) {
+    right[j] = numArr[j];
+  }
+  right = right.sort((a, b) => a - b);
+  nearBigNumber = [...left, ...right];
+  nearBigNumber = Number(nearBigNumber.join(''));
+  return nearBigNumber;
 }
 
 module.exports = {
